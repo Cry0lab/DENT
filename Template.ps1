@@ -17,7 +17,8 @@ General notes
 
 param (
     [string]$server = "http://defaultserver", #Parameter of -server with a default value
-    [Parameter(Mandatory = $true)][string]$default #Parameter that the script will not run without getting. User will be prompted if not given
+    [Parameter(Mandatory = $true)][string]$default, #Parameter that the script will not run without getting. User will be prompted if not given
+    [switch]$force = $false #switch that can be checked for later
 )
 function Test-Administrator {
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
@@ -48,3 +49,7 @@ Write-Output $UserCredential
 Write-Output $InputFromUser
 Write-Output $server
 Write-Output $default
+
+if ($force){
+    Write-Host 'I did the thing'
+}
