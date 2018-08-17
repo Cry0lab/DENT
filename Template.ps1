@@ -13,7 +13,12 @@ General notes
 #>
 
 
-#<<<<<<<<<<<<<<<<<<<<      Functions      >>>>>>>>>>>>>>>>>>>#
+#<<<<<<<<<<<<<<<<<<<<      Functions and Parameters     >>>>>>>>>>>>>>>>>>>#
+
+param (
+    [string]$server = "http://defaultserver", #Parameter of -server with a default value
+    [Parameter(Mandatory = $true)][string]$default #Parameter that the script will not run without getting. User will be prompted if not given
+)
 function Test-Administrator {
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -41,3 +46,5 @@ $InputFromUser = Read-Host -Prompt 'Ask for something'
 Set-ExecutionPolicy RemoteSigned
 Write-Output $UserCredential
 Write-Output $InputFromUser
+Write-Output $server
+Write-Output $default
