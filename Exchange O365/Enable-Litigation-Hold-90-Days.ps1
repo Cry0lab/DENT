@@ -19,11 +19,6 @@ function Test-Administrator {
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
-function name {
-    param ([type]$parameter1, [type]$parameter2) #Function Parameters
-    #Function Body
-}
-
 #<<<<<<<<<<<<<<<<<<<<      Admin Check      >>>>>>>>>>>>>>>>>>>#
 
 if (-NOT (Test-Administrator)) {
@@ -34,10 +29,19 @@ if (-NOT (Test-Administrator)) {
 
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
 
-$UserCredential = Get-Credential
-$InputFromUser = Read-Host -Prompt 'Ask for something'
+Set-ExecutionPolicy RemoteSigned
+$UserCredential = Get-Credential -Message 'Your login is (username)@arrow.org'
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
+get-crt
 
 #<<<<<<<<<<<<<<<<<<<<      Script Body      >>>>>>>>>>>>>>>>>>>#
+
+#Log into Exchange Server through Powershell. Run as Administrator
 Set-ExecutionPolicy RemoteSigned
-Write-Output $UserCredential
-Write-Output $InputFromUser
+
+Import-PSSession $Session
+
+Get-Mailbox -Filter {LitigationHoldEnabled -eq $false}
+#Enable Litigation Hold for all accounts that don't currently have it enabled, duration 90 days
+#To Set duration as unlimited, set duration hold to "Unlimited"
+Get-Mailbox -Filter {LitigationHoldEnabled -eq $false} | Set-Mailbox -LitigationHoldEnabled $true -LitigationHoldDuration 90

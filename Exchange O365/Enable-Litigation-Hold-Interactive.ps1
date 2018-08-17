@@ -32,6 +32,14 @@ function Enable-All {
     }
 }
 
+#<<<<<<<<<<<<<<<<<<<<      Admin Check      >>>>>>>>>>>>>>>>>>>#
+
+if (-NOT (Test-Administrator)) {
+    Write-Host 'Error: Permission Denied' -ForegroundColor Red
+    Write-Host 'Please run this Script as Administrator' -ForegroundColor Red
+    exit
+}
+
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
 
 Set-ExecutionPolicy RemoteSigned

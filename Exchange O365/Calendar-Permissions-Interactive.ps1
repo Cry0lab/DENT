@@ -19,11 +19,6 @@ function Test-Administrator {
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
-function name {
-    param ([type]$parameter1, [type]$parameter2) #Function Parameters
-    #Function Body
-}
-
 #<<<<<<<<<<<<<<<<<<<<      Admin Check      >>>>>>>>>>>>>>>>>>>#
 
 if (-NOT (Test-Administrator)) {
@@ -34,10 +29,25 @@ if (-NOT (Test-Administrator)) {
 
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
 
+
+
+Set-ExecutionPolicy RemoteSigned
 $UserCredential = Get-Credential
 $InputFromUser = Read-Host -Prompt 'Ask for something'
 
+
+
 #<<<<<<<<<<<<<<<<<<<<      Script Body      >>>>>>>>>>>>>>>>>>>#
-Set-ExecutionPolicy RemoteSigned
+
 Write-Output $UserCredential
 Write-Output $InputFromUser
+
+
+#Log into Exchange Server through Powershell. Run as Administrator
+Set-ExecutionPolicy RemoteSigned
+$UserCredential = Get-Credential
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
+Import-PSSession $Session
+
+#Command
+Set-MailboxFolderPermission "Room1:\calendar" -User Default -AccessRights LimitedDetails
