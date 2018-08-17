@@ -1,15 +1,21 @@
 <#
+.NAME
+    Template.ps1
+
 .SYNOPSIS
-A one sentence explanation of the script.
+    A one sentence explanation of the script.
+
+.SYNTAX
+    Syntax
 
 .DESCRIPTION
-Long description
+    Long description
 
-.EXAMPLE
-An example
+.EXAMPLES
+    Example
 
 .NOTES
-General notes
+    General notes
 #>
 
 
