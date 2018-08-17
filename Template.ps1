@@ -1,12 +1,7 @@
 <#
-.NAME
-    Template.ps1
 
 .SYNOPSIS
     A one sentence explanation of the script.
-
-.SYNTAX
-    Syntax
 
 .DESCRIPTION
     Long description
