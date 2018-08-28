@@ -1,10 +1,17 @@
 <#
 
 .SYNOPSIS
-    A one sentence explanation of the script.
+    A module to automatically repair common issues on a Domain Joined Windows 10 machine.
 
 .DESCRIPTION
-    Long description
+    This module will accomplish the following functions in the following order unless specified not to execute:
+        Flush Dns
+        DHCP Renew
+        Windows Credentials Flush
+        Enable Netlogon Service and set to automatic
+        Reset IE settings
+        Gpupdate /force
+        Reboot
 
 .EXAMPLE
     Example
@@ -16,18 +23,14 @@
 
 #<<<<<<<<<<<<<<<<<<<<      Functions and Parameters     >>>>>>>>>>>>>>>>>>>#
 
-<#
+
 param (
-    [string]$server = "http://defaultserver", #Parameter of -server with a default value
     [Parameter(Mandatory = $true)][string]$default, #Parameter that the script will not run without getting. User will be prompted if not given
     [switch]$force = $false #switch that can be checked for later
 )
-#>
 
-function Test-Administrator {
-    $user = [Security.Principal.WindowsIdentity]::GetCurrent();
-    (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-}
+
+
 
 <#function name {
     param ([type]$parameter1, [type]$parameter2) #Function Parameters
@@ -36,23 +39,14 @@ function Test-Administrator {
 
 #<<<<<<<<<<<<<<<<<<<<      Admin Check      >>>>>>>>>>>>>>>>>>>#
 
-if (-NOT (Test-Administrator)) {
-    Write-Host 'Error : Permission Denied : Elevation is required' -ForegroundColor Red
-    Write-Host 'Please run this Script as Administrator' -ForegroundColor Red
-    exit
-}
+
 
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
 
-$UserCredential = Get-Credential
-$InputFromUser = Read-Host -Prompt 'Ask for something'
+
 
 #<<<<<<<<<<<<<<<<<<<<      Script Body      >>>>>>>>>>>>>>>>>>>#
-Set-ExecutionPolicy RemoteSigned
-Write-Output $UserCredential
-Write-Output $InputFromUser
-Write-Output $server
-Write-Output $default
+
 
 # switch example using $force
 if ($force) {
