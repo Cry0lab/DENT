@@ -26,11 +26,65 @@
 
 param (
     [Parameter(Mandatory = $true)][string]$default, #Parameter that the script will not run without getting. User will be prompted if not given
-    [switch]$force = $false #switch that can be checked for later
+    [switch]$NoFlushDns = $false,
+    [switch]$NOIPRenew = $false,
+    [switch]$KeepCreds = $false,
+    [switch]$SkipNetlogon = $false,
+    [switch]$SkipIEReset = $false,
+    [switch]$SkipGPOUpdate = $false,
+    [switch]$NoReboot = $false
 )
 
+check-module {
+    param {
+        [Parameter(Mandatory = $true)][string]$moduleName
+    }
+    Write-Host 'Veryifing that $moduleName is installed....' -ForegroundColor Yellow
+
+    if (Get-Module -ListAvailable -Name $moduleName) {
+        Write-Host 'Success: $moduleName is installed' -ForegroundColor Green
+    }
+    else {
+        Write-Host "Failure: $moduleName does not exist" -ForegroundColor Red
+        Write-Host "Installing $moduleName Module...." -ForegroundColor Yellow
+        Install-Module $moduleName -force
+        Write-Host "Module installed" -ForegroundColor Green
+    }
+}
+
+flush-dns {
+    if ($NoFlushDns) {
+        Write-Host "Skipping DNS Flush" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "Flushing DNS" -ForegroundColor Yellow
+        Clear-DnsClientCache
+        Write-Host "DNS Flushed" -ForegroundColor Green
+    }
+}
+
+renew-dhcp {
+    if ($NoIPRenew) {
+        Write-Host "Skipping DHCP renewal" -ForegroundColor Yellow
+    }
+    else {
+        $ethernet = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IpEnabled -eq $true -and $_.DhcpEnabled -eq $true}
 
 
+        foreach ($lan in $ethernet) {
+            Write-Host "Flushing IP addresses" -ForegroundColor Yellow
+            Sleep 2
+            $lan.ReleaseDHCPLease() | out-Null
+            Write-Host "Renewing IP Addresses" -ForegroundColor Green
+            $lan.RenewDHCPLease() | out-Null
+            Write-Host "The New Ip Address is "$lan.IPAddress" with Subnet "$lan.IPSubnet"" -ForegroundColor Yellow
+        }
+    }
+}
+
+flush-creds {
+
+}
 
 <#function name {
     param ([type]$parameter1, [type]$parameter2) #Function Parameters
@@ -46,9 +100,3 @@ param (
 
 
 #<<<<<<<<<<<<<<<<<<<<      Script Body      >>>>>>>>>>>>>>>>>>>#
-
-
-# switch example using $force
-if ($force) {
-    Write-Host 'I did the thing'
-}
