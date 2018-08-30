@@ -83,16 +83,33 @@ renew-dhcp {
 }
 
 flush-creds {
-
+    if (check-module "CredentialManager") {
+        #Flush the Creds
+    }
+    else {
+        #Install the Module
+        #Flush the creds
+    }
 }
 
-<#function name {
-    param ([type]$parameter1, [type]$parameter2) #Function Parameters
-    #Function Body
-}#>
+set-Netlogon {
+    Set-Service -Name Netlogon -StartupType Automatic
+    Start-Service -Name Netlogon
+}
+
+
+function Test-Administrator {
+    $user = [Security.Principal.WindowsIdentity]::GetCurrent();
+    (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
 
 #<<<<<<<<<<<<<<<<<<<<      Admin Check      >>>>>>>>>>>>>>>>>>>#
 
+if (-NOT (Test-Administrator)) {
+    Write-Host 'Error : Permission Denied : Elevation is required' -ForegroundColor Red
+    Write-Host 'Please run this Script as Administrator' -ForegroundColor Red
+    exit
+}
 
 
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
