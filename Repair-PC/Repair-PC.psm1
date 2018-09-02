@@ -35,6 +35,10 @@ param (
     [switch]$NoReboot = $false
 )
 
+is-static {
+    #Function to return True or False depending on whether a static IP is set
+}
+
 check-module {
     param {
         [Parameter(Mandatory = $true)][string]$moduleName
@@ -66,6 +70,9 @@ flush-dns {
 renew-dhcp {
     if ($NoIPRenew) {
         Write-Host "Skipping DHCP renewal" -ForegroundColor Yellow
+    }
+    elseif (is-static) {
+        #Change ip and dns to dhcp from static
     }
     else {
         $ethernet = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IpEnabled -eq $true -and $_.DhcpEnabled -eq $true}
