@@ -11,7 +11,7 @@
         Enable Netlogon Service and set to automation
         Gpupdate /force
         Reboot
-
+    The executable will exist on the C: Drive with a shortcut on the Desktop
 .EXAMPLE
     Example
 
@@ -29,7 +29,6 @@ param (
     [switch]$NOIPRenew = $false,
     [switch]$KeepCreds = $false,
     [switch]$SkipNetlogon = $false,
-    [switch]$SkipIEReset = $false,
     [switch]$SkipGPOUpdate = $false,
     [switch]$NoReboot = $false
 )
@@ -79,7 +78,7 @@ renew-dhcp {
 
         foreach ($lan in $ethernet) {
             Write-Host "Flushing IP addresses" -ForegroundColor Yellow
-            Sleep 2
+            Start-Sleep 2
             $lan.ReleaseDHCPLease() | out-Null
             Write-Host "Renewing IP Addresses" -ForegroundColor Green
             $lan.RenewDHCPLease() | out-Null
