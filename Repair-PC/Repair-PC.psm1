@@ -8,8 +8,7 @@
         Flush Dns
         DHCP Renew
         Windows Credentials Flush
-        Enable Netlogon Service and set to automatic
-        Reset IE settings
+        Enable Netlogon Service and set to automation
         Gpupdate /force
         Reboot
 
