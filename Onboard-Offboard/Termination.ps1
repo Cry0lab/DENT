@@ -4,6 +4,7 @@
     A one sentence explanation of the script.
 
 .DESCRIPTION
+    Search AD for User
     Disable User in AD
     Remove from all Groups with an email associated with them
     Do emails need to be shared?
@@ -56,17 +57,21 @@ if (-NOT (Test-Administrator)) {
 
 #<<<<<<<<<<<<<<<<<<<<      Variables and Interaction      >>>>>>>>>>>>>>>>>>>#
 
-$UserCredential = Get-Credential
-$InputFromUser = Read-Host -Prompt 'Ask for something'
+#$UserCredential = Get-Credential
+$EmployeeSearch = Read-Host -Prompt 'Enter the Last Name of the User'
 
 #<<<<<<<<<<<<<<<<<<<<      Script Body      >>>>>>>>>>>>>>>>>>>#
 Set-ExecutionPolicy RemoteSigned
-Write-Output $UserCredential
-Write-Output $InputFromUser
-Write-Output $server
-Write-Output $default
-
-# switch example using $force
-if ($force) {
-    Write-Host 'I did the thing'
+#Write-Output $UserCredential
+Write-Output $EmployeeSearch
+$Employee = Get-ADuser -Filter {SurName -eq $EmployeeSearch} | Select-Object givenName, Surname, name, DistinguishedName, SamAccountName, l
+Write-Output $Employee
+foreach ($person in $Employee) {
+    Write-Host "Name: "$person.name
+    Write-Host "Username: "$person.SamAccountName
+    Write-Host "Location: "$person.l
+    Write-Host
 }
+
+#Write-Output $server
+#Write-Output $default
