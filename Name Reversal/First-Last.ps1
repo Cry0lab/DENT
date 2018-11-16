@@ -1,5 +1,5 @@
 #Get all AD Users
-$Users = Get-ADUser -SearchBase "OU=Administrators,OU=Users,OU=Arrow,DC=arrow,DC=org" -Filter {(GivenName -Like "*") -And (Surname -Like "*")} -Properties DisplayName | Select-Object DisplayName, givenName, sn, name, DistinguishedName
+$Users = Get-ADUser -SearchBase "OU=Users,OU=Arrow,DC=arrow,DC=org" -Filter {(GivenName -Like "*") -And (Surname -Like "*")} -Properties DisplayName | Select-Object DisplayName, givenName, Surname, name, DistinguishedName
 
 #Cycle through each AD User
 ForEach ($User In $Users) {
@@ -7,10 +7,10 @@ ForEach ($User In $Users) {
     #Gather Information about User
     $DN = $User.DistinguishedName
     $First = $User.givenName
-    $Last = $User.sn
+    $Last = $User.Surname
     $CN = $User.name
     $Display = $User.DisplayName
-    $NewName = "$First $Last"
+    $NewName = "$First" + " " + "$Last"
 
     #Debug Print Outs
     Write-Output "Current Display Name is $Display"
@@ -21,7 +21,11 @@ ForEach ($User In $Users) {
     #If the Current CN is not the New Name, change it to the New Name
     If ($CN -ne $NewName) {Rename-ADObject -Identity $DN -NewName $NewName}
 
-    #Debug Print Outs
+}
+
+#Debug Print Outs
+$Users = Get-ADUser -SearchBase "OU=Users,OU=Arrow,DC=arrow,DC=org" -Filter {(GivenName -Like "*") -And (Surname -Like "*")} -Properties DisplayName | Select-Object DisplayName, givenName, Surname, name, DistinguishedName
+ForEach ($User In $Users) {
     $CN = $User.name
     $Display = $User.DisplayName
     Write-Output "New Display Name is $Display"
