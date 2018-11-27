@@ -104,13 +104,7 @@ function renew-dhcp {
 }
 
 function flush-creds {
-    if (check-module "CredentialManager") {
-        #Flush the Creds
-    }
-    else {
-        #Install the Module
-        #Flush the creds
-    }
+    cmdkey /list | ForEach-Object {if ($_ -like "*Ziel:*") {cmdkey /del:($_ -replace " ", "" -replace "Ziel:", "")}}
 }
 
 function set-Netlogon {
