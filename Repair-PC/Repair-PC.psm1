@@ -10,7 +10,6 @@
         Windows Credentials Flush
         Enable Netlogon Service and set to automation
         Gpupdate /force
-        Reboot
     The executable will exist on the C: Drive with a shortcut on the Desktop
 .EXAMPLE
     Example
