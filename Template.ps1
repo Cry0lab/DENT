@@ -55,6 +55,7 @@ Write-Output $server
 Write-Output $default
 
 # switch example using $force
-if ($force){
+if ($force) {
     Write-Host 'I did the thing'
+    Write-Host 'That thing worked'
 }
